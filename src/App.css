@@ -1,0 +1,12 @@
+*{
+  margin: 0;
+}
+
+textarea{
+  overflow:scroll ;
+  overflow: hidden;
+}
+
+.imagen-fondo{
+  background-color: #7057de;  
+}
