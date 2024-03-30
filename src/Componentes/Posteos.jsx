@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form"
 import * as yup from "yup"
 import {yupResolver} from "@hookform/resolvers/yup"
 import {Autenticacion, database, ObtenerAlmacenamientoImagenes} from "../config/useFirebase"
-import {addDoc, getDocs , collection } from "firebase/firestore"
+import {addDoc, getDocs , collection, deleteDoc, doc } from "firebase/firestore"
 import { useAuthState } from 'react-firebase-hooks/auth'
 import {ref, uploadBytes , listAll, getDownloadURL} from "firebase/storage"
 import {v4} from "uuid"
@@ -13,12 +13,13 @@ export const Posteos = () => {
 
   const [imgUpload, setImgUpload] = useState(null)
   const [listaimagenes, setListaimagenes] = useState([])
-
+  const [load , setLoad ] = useState(false)
 
 
   // la informacion del componente usuario, 
   // que viene de la autenticacion con google
   const [ user ] = useAuthState(Autenticacion)
+
 
   // mensaje de error de tipeo al escribir en el formulario de posteo
   const Squem = yup.object().shape({
@@ -41,14 +42,18 @@ export const Posteos = () => {
       userid: user?.uid,
     })
   }
+  
   const [ListaPosteos , setListaPosteos ] = useState(null)
 
   // funcion que devuelve la informacion de la base de datos
-const ObtenerPublicaciones = async() => { 
+const ObtenerPublicaciones = async () => { 
+  setLoad(true)
 const datos = await getDocs(Pubicacioness)
 setListaPosteos(datos.docs.map((e) => ({...e.data(),  id: e.id})))
+setLoad(false)
 }
-// console.log(ListaPosteos)
+// acá se hace la ruta y carpeta en firebase para almacenar las imagenes y darles un
+//una ruta unica
 const SubirImagen = async () => { 
  if(imgUpload === null) return  
  const imgRef = ref(ObtenerAlmacenamientoImagenes, `imagenes/${imgUpload.name + v4()}`)
@@ -56,23 +61,31 @@ const SubirImagen = async () => {
  alert("imagen subida con éxito")
 
  }
-const rutaAlmacenImg = ref(ObtenerAlmacenamientoImagenes, "imagenes/")
 
-useEffect(() => {
-  ObtenerPublicaciones()
+ const rutaAlmacenImg = ref(ObtenerAlmacenamientoImagenes, "imagenes/")
+ 
+ useEffect(() => {
+   ObtenerPublicaciones()
+   
   // entra al objeto que devuelve la carpeta almacenada
   //  en firebase y al encontrarla, tiene descargar la url para poder recuperar la imagen 
   // almacenada 
   listAll(rutaAlmacenImg)
   .then(res => {
     // console.log(i)
-    res.items.forEach(i => 
+    res.items.forEach(i => {
       getDownloadURL(i)
-      .then(enlaceImg => 
-        setListaimagenes(prev => [...prev, enlaceImg])))
-  })
-},[])
+      .then(enlaceImg => {
+        setListaimagenes(prev => [...prev, enlaceImg] ) })} )
+      })
+    },[])
+    
+    
+    const BorrarPublicacion = async (id) => {
+     await deleteDoc(doc(database, "posts social media", id))
+      }
 
+      console.log(ListaPosteos)
 
   return (
 
@@ -104,8 +117,10 @@ useEffect(() => {
       <article className='flex justify-center flex-col gap-[4rem] 
       
       text-center  mx-auto   min-w-[715px] ' >
-        {ListaPosteos?.map(e => ( 
+        {/* {load && <h1 style={{fontSize: "3rem"}}>Loading...</h1> } */}
 
+        {load ? <h1 style={{fontSize: "3rem"}}>Loading...</h1> : ListaPosteos?.map(e => ( 
+          
         <div key={e.id} style={{ 
           display: "flex", 
           flexDirection : "column",
@@ -116,18 +131,26 @@ useEffect(() => {
           backgroundColor: "#a5a3a3",
           height: "20vh"
           }}>
+
           <p style={{width: "100%" , fontSize: "2rem", color: "#fff", textAlign: "center"}}>{e?.nombreUsuario}</p>
           <p style={{width: "100%" , fontSize: "2rem", color: "#fff", textAlign: "center"}}>{e?.publicacion}</p>
+          <button className=' h-auto w-fit bg-[#f3f4f3]
+           text-[#000] text-[2rem] mx-auto
+           ' onClick={()=> BorrarPublicacion(e.id)}>Borrar</button>
         </div>
         ))}
-          <div className='grid-img'>
 
-        {listaimagenes.map(e => (
+        <div className='grid-img'>
+
+        {load ? <h2 style={{fontSize: "3rem"}}>Loading images</h2> : listaimagenes?.map(e => {
+          return <img style={{height: "auto", width: "32rem", margin: "auto"}} src={e} alt="" />
+        }
           
 
-            <img style={{height: "auto", width: "32rem", margin: "auto"}} src={e} alt="" />
-          ))}
-          </div>
+            
+          )}
+        </div>
+        
       </article>
     </main>
   )
