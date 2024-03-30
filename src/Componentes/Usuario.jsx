@@ -8,10 +8,6 @@ export const Usuario = () => {
 
 const [ user ] = useAuthState(Autenticacion)
 
-// console.log(ProveedorGoogle)
-// console.log(app)
-
-
 const InicioSecionGoogle = async () => {  
 await signInWithPopup( Autenticacion, ProveedorGoogle)
 

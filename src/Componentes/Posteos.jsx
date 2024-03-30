@@ -5,11 +5,13 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import {Autenticacion, database, ObtenerAlmacenamientoImagenes} from "../config/useFirebase"
 import {addDoc, getDocs , collection } from "firebase/firestore"
 import { useAuthState } from 'react-firebase-hooks/auth'
-
+import {ref, uploadBytes } from "firebase/storage"
+import {v4} from "uuid"
 
 
 export const Posteos = () => {
 
+  const [imgUpload, setImgUpload] = useState(null)
 
   // la informacion del componente usuario, 
   // que viene de la autenticacion con google
@@ -50,6 +52,14 @@ useEffect(() => {
 
 },[])
 
+ const SubirImagen = async () => { 
+  if(imgUpload === null) return  
+  const imgRef = ref(ObtenerAlmacenamientoImagenes, `imagenes/${imgUpload.name + v4()}`)
+  const UploadByt = await uploadBytes(imgRef, imgUpload)
+  alert("imagen subida con éxito")
+
+  }
+
   return (
 
     <main className='flex justify-center  h-fit flex-col 
@@ -69,9 +79,11 @@ useEffect(() => {
               name="" id="" cols="30" rows="10" {...register("publicacion")}></textarea>
                 <i className='font-bold  text-[#cc3535] text-[2rem] mx-auto'>{errors.publicacion?.message}</i>
 
-              <input className='mx-auto w-fit ' type="file" name="" id="" />
+              <input onChange={e => { 
+                setImgUpload(e.target.files[0])}} 
+                className='mx-auto w-fit ' type="file" name="" id="" />
 
-            <input className='bg-[#4c5ddf] h-[2rem] w-[7rem] 
+            <input onClick={SubirImagen} className='bg-[#4c5ddf] h-[2rem] w-[7rem] 
             cursor-pointer rounded-xl mx-auto  hover:bg-[#bbc1ed]' 
             type="submit" value="Publicar" />
         </form>
