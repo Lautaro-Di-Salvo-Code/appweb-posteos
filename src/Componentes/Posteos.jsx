@@ -54,19 +54,19 @@ useEffect(() => {
 
     <main className='flex justify-center  h-fit flex-col 
     relative
-    top-[20rem]
+    top-[35rem]
     mx-auto gap-[2rem]  p-[3rem]'>
-        <h2 className='text-center text-[3rem]'>Posteos</h2>
 
         <form onSubmit={handleSubmit(Publicaciones)} 
-         className='mb-[10vh]  flex flex-col gap-[2rem] min-w-[715px]
-         fixed left-[31vw]  right-[31vw] top-[5rem] justify-center
-         z-[300]
-          bg-slate-500 mx-auto rounded-xl p-[2rem]' action="">
+        className='mb-[10vh]  flex flex-col gap-[2rem] min-w-[715px]
+        fixed left-[31vw]  right-[31vw] top-[5rem] justify-center
+        z-[300]
+        bg-slate-500 mx-auto rounded-xl p-[2rem]' action="">
 
+            <h2 className='text-center text-[3rem]'>Posteos</h2>
             <textarea className='max-h-[9rem] bg-[#a5a3a3] 
               resize-none p-[1rem] text-[2rem] text-[#fff]'
-               name="" id="" cols="30" rows="10" {...register("publicacion")}></textarea>
+              name="" id="" cols="30" rows="10" {...register("publicacion")}></textarea>
                 <i className='font-bold  text-[#cc3535] text-[2rem] mx-auto'>{errors.publicacion?.message}</i>
 
               <input className='mx-auto w-fit ' type="file" name="" id="" />
