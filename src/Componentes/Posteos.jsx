@@ -11,7 +11,8 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 export const Posteos = () => {
 
 
-
+  // la informacion del componente usuario, 
+  // que viene de la autenticacion con google
   const [ user ] = useAuthState(Autenticacion)
 
   // mensaje de error de tipeo al escribir en el formulario de posteo
@@ -68,7 +69,7 @@ useEffect(() => {
                name="" id="" cols="30" rows="10" {...register("publicacion")}></textarea>
                 <i className='font-bold  text-[#cc3535] text-[2rem] mx-auto'>{errors.publicacion?.message}</i>
 
-              {/* <input className='mx-auto w-fit ' type="file" name="" id="" /> */}
+              <input className='mx-auto w-fit ' type="file" name="" id="" />
 
             <input className='bg-[#4c5ddf] h-[2rem] w-[7rem] 
             cursor-pointer rounded-xl mx-auto  hover:bg-[#bbc1ed]' 
