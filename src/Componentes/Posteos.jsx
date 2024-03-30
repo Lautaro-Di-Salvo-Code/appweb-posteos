@@ -5,13 +5,16 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import {Autenticacion, database, ObtenerAlmacenamientoImagenes} from "../config/useFirebase"
 import {addDoc, getDocs , collection } from "firebase/firestore"
 import { useAuthState } from 'react-firebase-hooks/auth'
-import {ref, uploadBytes } from "firebase/storage"
+import {ref, uploadBytes , listAll, getDownloadURL} from "firebase/storage"
 import {v4} from "uuid"
 
 
 export const Posteos = () => {
 
   const [imgUpload, setImgUpload] = useState(null)
+  const [listaimagenes, setListaimagenes] = useState([])
+
+
 
   // la informacion del componente usuario, 
   // que viene de la autenticacion con google
@@ -46,19 +49,30 @@ const datos = await getDocs(Pubicacioness)
 setListaPosteos(datos.docs.map((e) => ({...e.data(),  id: e.id})))
 }
 // console.log(ListaPosteos)
+const SubirImagen = async () => { 
+ if(imgUpload === null) return  
+ const imgRef = ref(ObtenerAlmacenamientoImagenes, `imagenes/${imgUpload.name + v4()}`)
+ const UploadByt = await uploadBytes(imgRef, imgUpload)
+ alert("imagen subida con éxito")
+
+ }
+const rutaAlmacenImg = ref(ObtenerAlmacenamientoImagenes, "imagenes/")
 
 useEffect(() => {
   ObtenerPublicaciones()
-
+  // entra al objeto que devuelve la carpeta almacenada
+  //  en firebase y al encontrarla, tiene descargar la url para poder recuperar la imagen 
+  // almacenada 
+  listAll(rutaAlmacenImg)
+  .then(res => {
+    // console.log(i)
+    res.items.forEach(i => 
+      getDownloadURL(i)
+      .then(enlaceImg => 
+        setListaimagenes(prev => [...prev, enlaceImg])))
+  })
 },[])
 
- const SubirImagen = async () => { 
-  if(imgUpload === null) return  
-  const imgRef = ref(ObtenerAlmacenamientoImagenes, `imagenes/${imgUpload.name + v4()}`)
-  const UploadByt = await uploadBytes(imgRef, imgUpload)
-  alert("imagen subida con éxito")
-
-  }
 
   return (
 
@@ -92,7 +106,8 @@ useEffect(() => {
       text-center  mx-auto   min-w-[715px] ' >
         {ListaPosteos?.map(e => ( 
 
-        <div key={e.id} style={{ display: "flex", 
+        <div key={e.id} style={{ 
+          display: "flex", 
           flexDirection : "column",
           zIndex: "2",
           position: "relative",
@@ -105,6 +120,14 @@ useEffect(() => {
           <p style={{width: "100%" , fontSize: "2rem", color: "#fff", textAlign: "center"}}>{e?.publicacion}</p>
         </div>
         ))}
+          <div className='grid-img'>
+
+        {listaimagenes.map(e => (
+          
+
+            <img style={{height: "auto", width: "32rem", margin: "auto"}} src={e} alt="" />
+          ))}
+          </div>
       </article>
     </main>
   )

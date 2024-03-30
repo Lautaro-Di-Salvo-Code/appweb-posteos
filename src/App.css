@@ -9,7 +9,12 @@ textarea{
   overflow:scroll ;
   overflow: hidden;
 }
-
+.grid-img{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 2rem;
+}
 .imagen-fondo{
   background: rgb(2,0,36);
   background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(205,90,49,1) 32%, rgba(181,0,251,1) 81%);
