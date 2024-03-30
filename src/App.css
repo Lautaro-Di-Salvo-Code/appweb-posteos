@@ -2,11 +2,15 @@
   margin: 0;
 }
 
+html{
+  overflow-y: scroll;
+}
 textarea{
   overflow:scroll ;
   overflow: hidden;
 }
 
 .imagen-fondo{
-  background-color: #7057de;  
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(205,90,49,1) 32%, rgba(181,0,251,1) 81%);
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Autenticacion, ProveedorGoogle, app} from "../config/useFirebase"
+import { Autenticacion, ProveedorGoogle} from "../config/useFirebase"
 import { signInWithPopup, signOut} from "firebase/auth"
 import { useAuthState} from "react-firebase-hooks/auth"
 
@@ -25,7 +25,7 @@ await signOut(Autenticacion)
 
   return (
    
-<aside className='flex flex-col fixed bg-[#b3afaf] w-[20vw] h-screen justify-around  '>
+<aside className='flex flex-col fixed bg-[#b3afaf] w-[20vw] h-screen justify-around  z-[500]'>
 <article  className='imagen-fondo bg-center relative top-[-9rem] h-[20vh]'>
 
     <div className='flex flex-wrap w-[100%] flex-col  content-center pl-[2rem] '> 
@@ -35,9 +35,9 @@ await signOut(Autenticacion)
     </div>
 </article>
 
-    <div className='px-[2rem]'>
-      {!user && <button className='bg-[#4c5ddf] hover:bg-[#bbc1ed] h-[2rem] w-[7rem] rounded-xl' onClick={InicioSecionGoogle}>Inicio Secion</button>}
-      {user && <button className='bg-[#4c5ddf] hover:bg-[#bbc1ed] h-[2rem] w-[7rem] rounded-xl' onClick={CerrarSecionGoogle}>Cerrar Secion</button>}
+    <div className='px-[2rem] cursor-pointer'>
+      {!user && <button className='bg-[#4c5ddf] hover:bg-[#bbc1ed] cursor-pointer h-[2rem] w-[7rem] rounded-xl' onClick={InicioSecionGoogle}>Inicio Secion</button>}
+      {user && <button className='bg-[#4c5ddf] hover:bg-[#bbc1ed] cursor-pointer h-[2rem] w-[7rem] rounded-xl' onClick={CerrarSecionGoogle}>Cerrar Secion</button>}
     </div>
     {!user ? null : (
     <div className='px-[2rem]'>
